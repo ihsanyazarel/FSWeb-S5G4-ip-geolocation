@@ -1,26 +1,25 @@
 //axios import buraya gelecek
+import axios from "axios";
 
 var benimIP;
-
 
 // ------------ değiştirmeyin --------------
 // licensed to Ergineer 2022
 require("babel-core/register");
 require("babel-polyfill");
-async function ipAdresimiAl(){
-	await axios({
-		method: 'get',
-		url: 'https://apis.ergineer.com/ipadresim',
-	})
-	.then(function (response) {
-		return response.data
-	})
-	.then(function (a) {
-		benimIP=a
-	});
-}				
+async function ipAdresimiAl() {
+  await axios({
+    method: "get",
+    url: "https://apis.ergineer.com/ipadresim",
+  })
+    .then(function (response) {
+      return response.data;
+    })
+    .then(function (a) {
+      benimIP = a;
+    });
+}
 // ------------ değiştirmeyin --------------
-
 
 /*
 	ADIM 1: axios kullanarak, aşağıdaki URL'ye GET sorgusu atacağız
@@ -53,11 +52,48 @@ async function ipAdresimiAl(){
 	</div>
     </div>
 */
+const divCreator = (obj) => {
+	let div = document.createElement("div");
+	div.classList.add("card");
+	let bayrak = document.createElement("img");
+	bayrak.setAttribute("src", obj.ülkebayrağı);
+	div.appendChild(bayrak);
+	let cardInfo = document.createElement("div");
+	cardInfo.classList.add("card-info");
+	div.appendChild(cardInfo);
+	let h3 = document.createElement("h3");
+	h3.classList.add("ip");
+	h3.textContent = obj.sorgu;
+	cardInfo.appendChild(h3);
+	let ulke = document.createElement("p");
+	ulke.classList.add("ulke");
+	ulke.textContent = `${obj.ülke} (${obj.ülkeKodu})`;
+	cardInfo.appendChild(ulke);
+	let enlem = document.createElement("p");
+	enlem.textContent = `Enlem: ${obj.enlem} Boylam: ${obj.boylam}`;
+	cardInfo.appendChild(enlem);
+	let sehir = document.createElement("p");
+	sehir.textContent = `Şehir: ${obj.şehir}`;
+	cardInfo.appendChild(sehir);
+	let saat = document.createElement("p");
+	saat.textContent = `Saat Dilimi: ${obj.saatdilimi}`;
+	cardInfo.appendChild(saat);
+	let paraBirimi = document.createElement("p");
+	paraBirimi.textContent = `Para Birimi: ${obj.parabirimi}`;
+	cardInfo.appendChild(paraBirimi);
+	let ispBilgisi = document.createElement("p");
+	ispBilgisi.textContent = `ISP: ${obj.isp}`;
+	cardInfo.appendChild(ispBilgisi);
+	return div;
+  };
+
 
 /*
 	ADIM 4: API'den alınan verileri kullanarak ADIM 3'te verilen yapıda bir kart oluşturun ve 
 	bu kartı DOM olarak .cards elementinin içine ekleyin. 
 */
+
+const cards = document.querySelector(".cards");
 
 /*
 	ADIM 5: Manuel olarak eklediğiniz IP adresini dinamiğe dönüştürün. 
@@ -67,6 +103,19 @@ async function ipAdresimiAl(){
 	Örnek dinamik URL kullanımı: var url = "https://apis.ergineer.com/ipgeoapi/"+benimIP; 
 */
 
-
-
 //kodlar buraya gelecek
+const getData = async () => {
+	await ipAdresimiAl();
+	axios
+	  .get("https://apis.ergineer.com/ipgeoapi/" + benimIP)
+	  .then((res) => {
+		return res.data
+	  })
+	  .then((obj)=>{
+		cards.appendChild(divCreator(obj))
+	  })
+	  .catch((err) => {
+		console.log("error", err.message);
+	  });
+  };
+  getData();
